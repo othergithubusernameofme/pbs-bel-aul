@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+
+  pbsaul:
+    image: registry.gitlab.com/tumpi/lazyrest/pbs
+    environment:
+      - MONGO_PATH=mongodb://172.17.0.1:27017/pbsdb
+      - MONGO_DB_USER_NAME=aulia
+      - MONGO_DB_PASS=fajriyanti
+    networks:
+      - web
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.backend=pbsaul"
+        - "traefik.docker.network=web"
+        - "traefik.frontend.rule=Host:pbs.arizalsaputro.me"
+        - "traefik.enable=true"
+        - "traefik.port=8002"
+
+networks:
+  web:
+    external: true

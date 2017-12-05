@@ -1,0 +1,47 @@
+image: docker:latest
+services:
+- docker:dind
+
+stages:
+- build
+- release
+- deploy
+
+variables:
+  CONTAINER_TEST_IMAGE: registry.gitlab.com/tumpi/lazyrest/pbs:$CI_COMMIT_REF_NAME
+  CONTAINER_RELEASE_IMAGE: registry.gitlab.com/tumpi/lazyrest/pbs:latest
+
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+
+build:
+  stage: build
+  script:
+    - docker build --pull -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
+
+release-image:
+  stage: release
+  script:
+     - docker pull $CONTAINER_TEST_IMAGE
+     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+     - docker push $CONTAINER_RELEASE_IMAGE
+
+
+deploy:
+  stage: deploy
+  script:
+    - mkdir -p ~/.docker
+    - echo "$DOCKER_TLS_CA" > ~/.docker/ca.pem
+    - echo "$DOCKER_TLS_CA"
+    - echo "$DOCKER_TLS_CERT" > ~/.docker/cert.pem
+    - echo "$DOCKER_TLS_CERT"
+    - echo "$DOCKER_TLS_KEY" > ~/.docker/key.pem
+    - echo "$DOCKER_TLS_KEY"
+    - export DOCKER_HOST=tcp://$TARGET_HOST:2376 DOCKER_TLS_VERIFY=1
+    - echo "$TARGET_HOST"
+    - docker version
+    - docker stack deploy -c docker-compose.yml --with-registry-auth tumpi
+    - docker container prune -f
+    - docker image prune -f

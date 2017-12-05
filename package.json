@@ -1,0 +1,22 @@
+{
+  "name": "bel",
+  "version": "1.0.0",
+  "description": "tugas pbs bel aul",
+  "main": "index.js",
+  "scripts": {
+    "start":"node index.js",
+    "dev":"nodemon index.js localhost 8002"
+  },
+  "keywords": [
+    "pbs",
+    "sensor",
+    "bel"
+  ],
+  "author": "auliafarjriyanti",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^4.13.6",
+    "node-telegram-bot-api": "^0.29.0",
+    "restify": "^6.3.4"
+  }
+}

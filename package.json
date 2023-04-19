@@ -15,7 +15,7 @@
   "author": "auliafarjriyanti",
   "license": "ISC",
   "dependencies": {
-    "mongoose": "^4.13.6",
+    "mongoose": "^7.0.4",
     "node-telegram-bot-api": "^0.29.0",
     "restify": "^6.3.4"
   }
